@@ -16,19 +16,20 @@ def fletcher16(data: str) -> int:
     return (sum2 << 8) | sum1
 
 
-def check_digit_calculator(value): 
-    return str(fletcher16(value) % 10)
+def check_digit_calculator(value: str) -> int:
+    return fletcher16(value) % 10
+
 
 def checksum_matcher(data_field: str, expected_digit: str) -> bool:
     try:
-        return (fletcher16(data_field) % 10) == int(expected_digit)
+        return check_digit_calculator(data_field) == int(expected_digit)
     except ValueError:
         return False
 
 
 def mrz_parser(line_one: str, line_two: str) -> dict:
     data = {
-        "document_type": line_one[0:2],
+        "document_type": line_one[0],
         "country_code": line_one[2:5],
     }
 
@@ -74,6 +75,6 @@ def viz_encoder(data: dict) -> list[str]:
         f"{gender}{exp}{check_digit_calculator(exp)}"
         f"{personal}"
     )
-    line_two = line_two.ljust(43, "<")[:43] + check_digit_calculator(personal)
+    line_two = line_two.ljust(43, "<")[:43] + str(check_digit_calculator(personal))
 
     return [line_one, line_two]
