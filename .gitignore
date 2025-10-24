@@ -1,0 +1,10 @@
+# Ignore virtual environment folder if inside project
+.venv/
+venv/
+
+# Ignore pytest cache files
+.pytest_cache/
+__pycache__/
+
+# Ignore Python bytecode files
+*.pyc
