@@ -19,3 +19,15 @@ pipenv shell
 ```bash
 exit
 ```
+
+## Run PyTest Tests
+
+```bash
+pytest MTTDtest.py
+```
+
+## Generate a Test Coverage Report
+
+```bash
+pytest --cov=MRTD MTTDtest.py
+```

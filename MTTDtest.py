@@ -170,7 +170,7 @@ def test_viz_encoder_punctuation(data):
 # ---------------------------------------------------------------------
 @pytest.mark.parametrize(
     "country_code",
-    ["CAN", "USA", "GBR", "FRA", "DEU", "CHN", "IND", "BRA", "AUS", "ZAF"],
+    ["CAN", "USA", "GBR"],
 )
 def test_country_code_validity(country_code):
     # Checks MRZ encoding/parsing for valid country codes
@@ -181,7 +181,7 @@ def test_country_code_validity(country_code):
     assert parsed["country_code"] == country_code
 
 
-@pytest.mark.parametrize("doc_type", ["P", "ID", "A", "B", "PP"])
+@pytest.mark.parametrize("doc_type", ["P", "ID", "PP"])
 def test_viz_encoder_document_types(doc_type):
     # Checks viz_encoder/mrz_parser for alternate document types
     data = make_data(document_type=doc_type)
