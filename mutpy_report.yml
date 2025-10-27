@@ -1,0 +1,470 @@
+coverage:
+  all_nodes: 0
+  covered_nodes: 0
+mutation_score: 100.0
+mutations:
+- exception_traceback: "data = 'ABC', expected = 35782\n\n    @pytest.mark.parametrize(\n\
+    \        \"data, expected\",\n        [\n            (\"ABC\", 35782),\n     \
+    \       (\"\", 0),\n            (\"123456\", 11318),\n        ],\n    )\n    def\
+    \ test_fletcher16_exact_values(data, expected):\n        # Deterministic checksum\
+    \ values catch arithmetic mutations\n>       assert MRTD.fletcher16(data) == expected\n\
+    \               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError\n\n\
+    MTTDtest.py:39: AssertionError"
+  killer: MTTDtest.py::test_fletcher16_exact_values[ABC-35782]
+  module: &id001 !!python/module:MRTD ''
+  mutations:
+  - lineno: 14
+    operator: AOR
+  number: 1
+  status: killed
+  tests_run: 3
+  time: 0.048573970794677734
+- exception_traceback: "data = 'ABC', expected = 35782\n\n    @pytest.mark.parametrize(\n\
+    \        \"data, expected\",\n        [\n            (\"ABC\", 35782),\n     \
+    \       (\"\", 0),\n            (\"123456\", 11318),\n        ],\n    )\n    def\
+    \ test_fletcher16_exact_values(data, expected):\n        # Deterministic checksum\
+    \ values catch arithmetic mutations\n>       assert MRTD.fletcher16(data) == expected\n\
+    \               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError\n\n\
+    MTTDtest.py:39: AssertionError"
+  killer: MTTDtest.py::test_fletcher16_exact_values[ABC-35782]
+  module: *id001
+  mutations:
+  - lineno: 14
+    operator: AOR
+  number: 2
+  status: killed
+  tests_run: 3
+  time: 0.0358729362487793
+- exception_traceback: "data = 'ABC', expected = 35782\n\n    @pytest.mark.parametrize(\n\
+    \        \"data, expected\",\n        [\n            (\"ABC\", 35782),\n     \
+    \       (\"\", 0),\n            (\"123456\", 11318),\n        ],\n    )\n    def\
+    \ test_fletcher16_exact_values(data, expected):\n        # Deterministic checksum\
+    \ values catch arithmetic mutations\n>       assert MRTD.fletcher16(data) == expected\n\
+    \               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError\n\n\
+    MTTDtest.py:39: AssertionError"
+  killer: MTTDtest.py::test_fletcher16_exact_values[ABC-35782]
+  module: *id001
+  mutations:
+  - lineno: 15
+    operator: AOR
+  number: 3
+  status: killed
+  tests_run: 3
+  time: 0.035633087158203125
+- exception_traceback: "data = 'ABC', expected = 35782\n\n    @pytest.mark.parametrize(\n\
+    \        \"data, expected\",\n        [\n            (\"ABC\", 35782),\n     \
+    \       (\"\", 0),\n            (\"123456\", 11318),\n        ],\n    )\n    def\
+    \ test_fletcher16_exact_values(data, expected):\n        # Deterministic checksum\
+    \ values catch arithmetic mutations\n>       assert MRTD.fletcher16(data) == expected\n\
+    \               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError\n\n\
+    MTTDtest.py:39: AssertionError"
+  killer: MTTDtest.py::test_fletcher16_exact_values[ABC-35782]
+  module: *id001
+  mutations:
+  - lineno: 15
+    operator: AOR
+  number: 4
+  status: killed
+  tests_run: 3
+  time: 0.036923885345458984
+- exception_traceback: "value = 'AB1234567', expected_digit = '6'\n\n    @pytest.mark.parametrize(\"\
+    value, expected_digit\", CHECK_DIGIT_CASES)\n    def test_check_digit_calculator_known_cases(value,\
+    \ expected_digit):\n        # Known ICAO examples should reproduce published check\
+    \ digits\n        digit = MRTD.check_digit_calculator(value)\n>       assert str(digit)\
+    \ == expected_digit\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError\n\
+    \nMTTDtest.py:61: AssertionError"
+  killer: MTTDtest.py::test_check_digit_calculator_known_cases[AB1234567-6]
+  module: *id001
+  mutations:
+  - lineno: 20
+    operator: AOR
+  number: 5
+  status: killed
+  tests_run: 8
+  time: 0.04307198524475098
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 37
+    operator: AOR
+  number: 6
+  status: incompetent
+  tests_run: 24
+  time: 0.03879809379577637
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 109
+    operator: AOR
+  number: 7
+  status: incompetent
+  tests_run: 24
+  time: 0.0385432243347168
+- exception_traceback: "def test_viz_encoder_and_parser_roundtrip():\n        # Encoding\
+    \ then parsing should preserve the original data fields\n        lines = MRTD.viz_encoder(TEST_DATA)\n\
+    >       parsed = MRTD.mrz_parser(*lines)\n                 ^^^^^^^^^^^^^^^^^^^^^^^\n\
+    \nMTTDtest.py:117: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\
+    \ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\
+    \ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nline_one = 'P<CANDOE<<JOHN<MICHAEL<<<<<<<<<<<<<<<<<<<<<<',\
+    \ line_two = 'AB12345676CAN0190904M01303069876543210<<<<<5'\n\n>   ???\nE   ValueError:\
+    \ Passport Number checksum does not match\n\nMRTD:57: ValueError"
+  killer: MTTDtest.py::test_viz_encoder_and_parser_roundtrip
+  module: *id001
+  mutations:
+  - lineno: 56
+    operator: COD
+  number: 8
+  status: killed
+  tests_run: 24
+  time: 0.0383758544921875
+- exception_traceback: "def test_viz_encoder_and_parser_roundtrip():\n        # Encoding\
+    \ then parsing should preserve the original data fields\n        lines = MRTD.viz_encoder(TEST_DATA)\n\
+    >       parsed = MRTD.mrz_parser(*lines)\n                 ^^^^^^^^^^^^^^^^^^^^^^^\n\
+    \nMTTDtest.py:117: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\
+    \ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\
+    \ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nline_one = 'P<CANDOE<<JOHN<MICHAEL<<<<<<<<<<<<<<<<<<<<<<',\
+    \ line_two = 'AB12345676CAN0190904M01303069876543210<<<<<5'\n\n>   ???\nE   ValueError:\
+    \ Passport Number checksum does not match\n\nMRTD:57: ValueError"
+  killer: MTTDtest.py::test_viz_encoder_and_parser_roundtrip
+  module: *id001
+  mutations:
+  - lineno: 56
+    operator: COI
+  number: 9
+  status: killed
+  tests_run: 24
+  time: 0.03790688514709473
+- exception_traceback: "def test_viz_encoder_lastname_commas_removed():\n        #\
+    \ Last-name commas separate suffixes and should be stripped entirely\n       \
+    \ data = make_data(lastname=\"SMITH,JR\", given_name=\"JANE\")\n        lines\
+    \ = MRTD.viz_encoder(data)\n        parsed = MRTD.mrz_parser(*lines)\n>      \
+    \ assert parsed[\"lastname\"] == \"SMITHJR\"\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\
+    E       AssertionError\n\nMTTDtest.py:189: AssertionError"
+  killer: MTTDtest.py::test_viz_encoder_lastname_commas_removed
+  module: *id001
+  mutations:
+  - lineno: 74
+    operator: COI
+  number: 10
+  status: killed
+  tests_run: 30
+  time: 0.03993487358093262
+- exception_traceback: "def test_viz_encoder_and_parser_roundtrip():\n        # Encoding\
+    \ then parsing should preserve the original data fields\n        lines = MRTD.viz_encoder(TEST_DATA)\n\
+    \        parsed = MRTD.mrz_parser(*lines)\n        for key, value in TEST_DATA.items():\n\
+    >           assert parsed[key] == value\n                   ^^^^^^^^^^^^^^^^^^^^\n\
+    E           AssertionError\n\nMTTDtest.py:119: AssertionError"
+  killer: MTTDtest.py::test_viz_encoder_and_parser_roundtrip
+  module: *id001
+  mutations:
+  - lineno: 90
+    operator: COI
+  number: 11
+  status: killed
+  tests_run: 24
+  time: 0.03875017166137695
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 26
+    operator: EHD
+  number: 12
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 26
+    operator: EXS
+  number: 13
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: "def test_viz_encoder_and_parser_roundtrip():\n        # Encoding\
+    \ then parsing should preserve the original data fields\n        lines = MRTD.viz_encoder(TEST_DATA)\n\
+    >       parsed = MRTD.mrz_parser(*lines)\n                 ^^^^^^^^^^^^^^^^^^^^^^^\n\
+    \nMTTDtest.py:117: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\
+    \ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\
+    \ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nline_one = 'P<CANDOE<<JOHN<MICHAEL<<<<<<<<<<<<<<<<<<<<<<',\
+    \ line_two = 'AB12345676CAN0190904M01303069876543210<<<<<5'\n\n>   ???\nE   ValueError:\
+    \ Passport Number checksum does not match\n\nMRTD:57: ValueError"
+  killer: MTTDtest.py::test_viz_encoder_and_parser_roundtrip
+  module: *id001
+  mutations:
+  - lineno: 56
+    operator: LCR
+  number: 14
+  status: killed
+  tests_run: 24
+  time: 0.04058384895324707
+- exception_traceback: "data = 'ABC', expected = 35782\n\n    @pytest.mark.parametrize(\n\
+    \        \"data, expected\",\n        [\n            (\"ABC\", 35782),\n     \
+    \       (\"\", 0),\n            (\"123456\", 11318),\n        ],\n    )\n    def\
+    \ test_fletcher16_exact_values(data, expected):\n        # Deterministic checksum\
+    \ values catch arithmetic mutations\n>       assert MRTD.fletcher16(data) == expected\n\
+    \               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError\n\n\
+    MTTDtest.py:39: AssertionError"
+  killer: MTTDtest.py::test_fletcher16_exact_values[ABC-35782]
+  module: *id001
+  mutations:
+  - lineno: 16
+    operator: LOR
+  number: 15
+  status: killed
+  tests_run: 3
+  time: 0.03775906562805176
+- exception_traceback: "data = 'ABC', expected = 35782\n\n    @pytest.mark.parametrize(\n\
+    \        \"data, expected\",\n        [\n            (\"ABC\", 35782),\n     \
+    \       (\"\", 0),\n            (\"123456\", 11318),\n        ],\n    )\n    def\
+    \ test_fletcher16_exact_values(data, expected):\n        # Deterministic checksum\
+    \ values catch arithmetic mutations\n>       assert MRTD.fletcher16(data) == expected\n\
+    \               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError\n\n\
+    MTTDtest.py:39: AssertionError"
+  killer: MTTDtest.py::test_fletcher16_exact_values[ABC-35782]
+  module: *id001
+  mutations:
+  - lineno: 16
+    operator: LOR
+  number: 16
+  status: killed
+  tests_run: 3
+  time: 0.03929328918457031
+- exception_traceback: "data = '123456', expected = '8'\n\n    @pytest.mark.parametrize(\n\
+    \        \"data, expected\",\n        [\n            (\"123456\", str(MRTD.check_digit_calculator(\"\
+    123456\"))),\n            (\"ABCDEF\", str(MRTD.check_digit_calculator(\"ABCDEF\"\
+    ))),\n            (\"\", str(MRTD.check_digit_calculator(\"\"))),\n        ],\n\
+    \    )\n    def test_checksum_matcher_true(data, expected):\n        # Correct\
+    \ digits must produce a match\n>       assert MRTD.checksum_matcher(data, expected)\n\
+    \               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError\n\
+    \nMTTDtest.py:91: AssertionError"
+  killer: MTTDtest.py::test_checksum_matcher_true[123456-8]
+  module: *id001
+  mutations:
+  - lineno: 25
+    operator: ROR
+  number: 17
+  status: killed
+  tests_run: 18
+  time: 0.04021120071411133
+- exception_traceback: "def test_viz_encoder_and_parser_roundtrip():\n        # Encoding\
+    \ then parsing should preserve the original data fields\n        lines = MRTD.viz_encoder(TEST_DATA)\n\
+    \        parsed = MRTD.mrz_parser(*lines)\n        for key, value in TEST_DATA.items():\n\
+    >           assert parsed[key] == value\n                   ^^^^^^^^^^^^^^^^^^^^\n\
+    E           AssertionError\n\nMTTDtest.py:119: AssertionError"
+  killer: MTTDtest.py::test_viz_encoder_and_parser_roundtrip
+  module: *id001
+  mutations:
+  - lineno: 90
+    operator: ROR
+  number: 18
+  status: killed
+  tests_run: 24
+  time: 0.041139841079711914
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 32
+    operator: SIR
+  number: 19
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 32
+    operator: SIR
+  number: 20
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 33
+    operator: SIR
+  number: 21
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 33
+    operator: SIR
+  number: 22
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 36
+    operator: SIR
+  number: 23
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 36
+    operator: SIR
+  number: 24
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 37
+    operator: SIR
+  number: 25
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 42
+    operator: SIR
+  number: 26
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 42
+    operator: SIR
+  number: 27
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 43
+    operator: SIR
+  number: 28
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 43
+    operator: SIR
+  number: 29
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 45
+    operator: SIR
+  number: 30
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 45
+    operator: SIR
+  number: 31
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 47
+    operator: SIR
+  number: 32
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 47
+    operator: SIR
+  number: 33
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 49
+    operator: SIR
+  number: 34
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 49
+    operator: SIR
+  number: 35
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 95
+    operator: SIR
+  number: 36
+  status: incompetent
+  tests_run: 0
+  time: 0
+- exception_traceback: null
+  killer: null
+  module: *id001
+  mutations:
+  - lineno: 109
+    operator: SIR
+  number: 37
+  status: incompetent
+  tests_run: 0
+  time: 0
+number_of_tests: 45
+targets:
+- MRTD.py
+tests:
+- name: MTTDtest
+  target: null
+  time: 0.0465850830078125
+time_stats:
+  create_mutant_module: 0.008235692977905273
+  create_target_ast: 0.001592874526977539
+  mutate_module: 0.7601950168609619
+  run_tests_with_mutant: 0.633709192276001
+total_time: 0.8078141212463379

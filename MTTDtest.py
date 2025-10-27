@@ -1,129 +1,149 @@
 import pytest
-from MRTD import (
-    machine_readable_zone_scanner,
-    get_data_from_db,
-    fletcher16,
-    check_digit_calculator,
-    checksum_matcher,
-    mrz_parser,
-    viz_encoder,
-)
+
+import MRTD
 from testdata import (
+    CHECK_DIGIT_CASES,
+    LINE_1_TEST,
+    LINE_2_TEST,
     TEST_DATA,
     make_data,
 )
 
 
+# ---------------------------------------------------------------------
+# Stub behaviour
+# ---------------------------------------------------------------------
 def test_machine_readable_zone_scanner_stub():
-    # Checks stub for hardware scanner returns None
-    assert (
-        machine_readable_zone_scanner() is None
-        or machine_readable_zone_scanner() is None
-    )
+    # Hardware stub should return None when invoked
+    assert MRTD.machine_readable_zone_scanner() is None
 
 
 def test_get_data_from_db_stub():
-    # Checks stub for database returns None
-    assert get_data_from_db() is None or get_data_from_db() is None
+    # Database stub should return None when invoked
+    assert MRTD.get_data_from_db() is None
 
 
+# ---------------------------------------------------------------------
+# Fletcher-16 checksum
+# ---------------------------------------------------------------------
 @pytest.mark.parametrize(
     "data, expected",
     [
-        ("ABC", (ord("A") + ord("B") + ord("C")) % 255),
+        ("ABC", 35782),
         ("", 0),
-        ("123456", fletcher16("123456")),
+        ("123456", 11318),
     ],
 )
-def test_fletcher16_basic(data, expected):
-    # Checks fletcher16 checksum calculation for basic cases
-    assert isinstance(fletcher16(data), int)
-    # Statement coverage: result is always int
-    # Condition coverage: empty string, normal string
+def test_fletcher16_exact_values(data, expected):
+    # Deterministic checksum values catch arithmetic mutations
+    assert MRTD.fletcher16(data) == expected
+
+
+@pytest.mark.parametrize(
+    "data, expected_tail",
+    [
+        ("MRZ", 0xE6F9),
+        ("CANADA", 0xA099),
+    ],
+)
+def test_fletcher16_bit_structure(data, expected_tail):
+    # Validate the lower 16 bits to exercise both accumulators
+    assert MRTD.fletcher16(data) & 0xFFFF == expected_tail
 
 
 # ---------------------------------------------------------------------
-# Test: check_digit_calculator
+# Check digit calculator
 # ---------------------------------------------------------------------
+@pytest.mark.parametrize("value, expected_digit", CHECK_DIGIT_CASES)
+def test_check_digit_calculator_known_cases(value, expected_digit):
+    # Known ICAO examples should reproduce published check digits
+    digit = MRTD.check_digit_calculator(value)
+    assert str(digit) == expected_digit
+
+
 @pytest.mark.parametrize("data", ["123456", "", "A1B2C3"])
 def test_check_digit_calculator_range(data):
-    # Checks that check digit is always a single digit (0-9)
-    digit = check_digit_calculator(data)
+    # Check digit should always be a single decimal digit
+    digit = MRTD.check_digit_calculator(data)
     assert 0 <= digit < 10
 
 
 @pytest.mark.parametrize("data", ["", "@#$%^", "123!@#"])
 def test_check_digit_calculator_edge_cases(data):
-    # Checks check_digit_calculator with empty/special character strings
-    digit = check_digit_calculator(data)
+    # Non-alphanumeric characters are still processed without error
+    digit = MRTD.check_digit_calculator(data)
     assert 0 <= digit < 10
 
 
 # ---------------------------------------------------------------------
-# Test: checksum_matcher
+# Checksum matcher
 # ---------------------------------------------------------------------
 @pytest.mark.parametrize(
     "data, expected",
     [
-        ("123456", str(check_digit_calculator("123456"))),
-        ("ABCDEF", str(check_digit_calculator("ABCDEF"))),
-        ("", str(check_digit_calculator(""))),
+        ("123456", str(MRTD.check_digit_calculator("123456"))),
+        ("ABCDEF", str(MRTD.check_digit_calculator("ABCDEF"))),
+        ("", str(MRTD.check_digit_calculator(""))),
     ],
 )
 def test_checksum_matcher_true(data, expected):
-    # Checks checksum_matcher returns True for correct digit
-    assert checksum_matcher(data, expected)
+    # Correct digits must produce a match
+    assert MRTD.checksum_matcher(data, expected)
 
 
 @pytest.mark.parametrize(
     "data, expected",
     [
-        ("123456", str((check_digit_calculator("123456") + 1) % 10)),
-        ("ABCDEF", str((check_digit_calculator("ABCDEF") + 2) % 10)),
+        ("123456", str((MRTD.check_digit_calculator("123456") + 1) % 10)),
+        ("ABCDEF", str((MRTD.check_digit_calculator("ABCDEF") + 2) % 10)),
     ],
 )
 def test_checksum_matcher_false(data, expected):
-    # Checks checksum_matcher returns False for incorrect digit
-    assert not checksum_matcher(data, expected)
+    # Incorrect digits must fail the match
+    assert not MRTD.checksum_matcher(data, expected)
 
 
 def test_checksum_matcher_invalid_digit():
-    # Checks checksum_matcher with non-numeric expected digit
-    assert not checksum_matcher("123456", "X")
+    # Non-numeric expected digits should return False, not raise
+    assert not MRTD.checksum_matcher("123456", "X")
 
 
 # ---------------------------------------------------------------------
-# Test: mrz_parser and viz_encoder
+# MRZ parser and encoder
 # ---------------------------------------------------------------------
 def test_viz_encoder_and_parser_roundtrip():
-    # Checks that encoding and then parsing returns original data
-    lines = viz_encoder(TEST_DATA)
-    parsed = mrz_parser(*lines)
-    for k in TEST_DATA:
-        assert parsed[k] == TEST_DATA[k]
+    # Encoding then parsing should preserve the original data fields
+    lines = MRTD.viz_encoder(TEST_DATA)
+    parsed = MRTD.mrz_parser(*lines)
+    for key, value in TEST_DATA.items():
+        assert parsed[key] == value
 
 
 def test_mrz_parser_invalid_checksum():
-    # Checks mrz_parser raises ValueError for invalid checksum
+    # Tampering with a check digit must raise a ValueError
     line1 = "P<CANDOE<<JOHN<MICHAEL<<<<<<<<<<<<<<<<<<<<<<"
-    line2 = "AB12345670CAN0190904M01303069876543210<<<<<5"
-    # '0' instead of correct '6'
+    line2 = "AB12345670CAN0190904M01303069876543210<<<<<5"  # invalid passport digit
     with pytest.raises(ValueError):
-        mrz_parser(line1, line2)
+        MRTD.mrz_parser(line1, line2)
 
 
 def test_viz_encoder_produces_expected_lines():
-    # Checks that TEST_DATA encodes to LINE_1_TEST and LINE_2_TEST
-    from testdata import TEST_DATA, LINE_1_TEST, LINE_2_TEST
-
-    lines = viz_encoder(TEST_DATA)
+    # Regression guard for the canonical MRZ output
+    lines = MRTD.viz_encoder(TEST_DATA)
     assert lines[0] == LINE_1_TEST
     assert lines[1] == LINE_2_TEST
 
 
-# ---------------------------------------------------------------------
-# Additional edge cases for coverage
-# ---------------------------------------------------------------------
+def test_viz_encoder_embeds_valid_check_digits():
+    # Ensure each check digit in line_two is derived from the correct slice
+    line_one, line_two = MRTD.viz_encoder(TEST_DATA)
+    assert MRTD.check_digit_calculator(line_two[0:9]) == int(line_two[9])
+    assert MRTD.check_digit_calculator(line_two[13:19]) == int(line_two[19])
+    assert MRTD.check_digit_calculator(line_two[21:27]) == int(line_two[27])
+    personal = line_two[28:42].replace("<", " ").strip()
+    assert MRTD.check_digit_calculator(personal) == int(line_two[43])
+
+
 @pytest.mark.parametrize(
     "data",
     [
@@ -154,65 +174,63 @@ def test_viz_encoder_produces_expected_lines():
     ],
 )
 def test_viz_encoder_punctuation(data):
-    # Checks MRZ encoding for names with punctuation
-    lines = viz_encoder(data)
-    parsed = mrz_parser(*lines)
-    assert parsed["lastname"].replace(" ", "") == data["lastname"].replace(
-        "'", ""
-    ).replace("!", "")
-    assert parsed["given_name"].replace(" ", "") == data["given_name"].replace(
-        "-", ""
-    ).replace("?", "")
+    # Punctuation and spacing should normalise correctly through round-trip
+    lines = MRTD.viz_encoder(data)
+    parsed = MRTD.mrz_parser(*lines)
+    assert parsed["lastname"].replace(" ", "") == data["lastname"].replace("'", "").replace("!", "")
+    assert parsed["given_name"].replace(" ", "") == data["given_name"].replace("-", "").replace("?", "")
 
 
-# ---------------------------------------------------------------------
-# Test: nationality and country codes (Section 5)
-# ---------------------------------------------------------------------
-@pytest.mark.parametrize(
-    "country_code",
-    ["CAN", "USA", "GBR"],
-)
+def test_viz_encoder_lastname_commas_removed():
+    # Last-name commas separate suffixes and should be stripped entirely
+    data = make_data(lastname="SMITH,JR", given_name="JANE")
+    lines = MRTD.viz_encoder(data)
+    parsed = MRTD.mrz_parser(*lines)
+    assert parsed["lastname"] == "SMITHJR"
+
+
+@pytest.mark.parametrize("country_code", ["CAN", "USA", "GBR"])
 def test_country_code_validity(country_code):
-    # Checks MRZ encoding/parsing for valid country codes
+    # Valid country codes should be preserved through encoder/parser
     data = TEST_DATA.copy()
     data["country_code"] = country_code
-    lines = viz_encoder(data)
-    parsed = mrz_parser(*lines)
+    lines = MRTD.viz_encoder(data)
+    parsed = MRTD.mrz_parser(*lines)
     assert parsed["country_code"] == country_code
 
 
 @pytest.mark.parametrize("doc_type", ["P", "ID", "PP"])
 def test_viz_encoder_document_types(doc_type):
-    # Checks viz_encoder/mrz_parser for alternate document types
+    # Document type field supports both single and double character codes
     data = make_data(document_type=doc_type)
-    lines = viz_encoder(data)
-    parsed = mrz_parser(*lines)
+    lines = MRTD.viz_encoder(data)
+    parsed = MRTD.mrz_parser(*lines)
     assert parsed["document_type"] == doc_type
 
 
 @pytest.mark.parametrize("gender", ["M", "F", "X", "<", "O"])
 def test_viz_encoder_gender_values(gender):
-    # Checks viz_encoder/mrz_parser for alternate gender values
+    # Gender field should be returned exactly as supplied
     data = make_data(gender=gender)
-    lines = viz_encoder(data)
-    parsed = mrz_parser(*lines)
+    lines = MRTD.viz_encoder(data)
+    parsed = MRTD.mrz_parser(*lines)
     assert parsed["gender"] == gender
 
 
 @pytest.mark.parametrize("personal_number", ["", "<", "1234567890"])
 def test_viz_encoder_personal_number_valid(personal_number):
-    # Checks valid personal_number cases
+    # Personal number should round-trip and remain within ICAO length rules
     data = make_data(personal_number=personal_number)
-    lines = viz_encoder(data)
-    parsed = mrz_parser(*lines)
+    lines = MRTD.viz_encoder(data)
+    parsed = MRTD.mrz_parser(*lines)
     assert isinstance(parsed["personal_number"], str)
     assert len(parsed["personal_number"]) <= 14
 
 
 @pytest.mark.parametrize("personal_number", ["A!@#<>"])
 def test_viz_encoder_personal_number_invalid(personal_number):
-    # Checks invalid personal_number cases (should raise ValueError)
+    # Invalid characters should trigger a downstream checksum failure
     data = make_data(personal_number=personal_number)
-    lines = viz_encoder(data)
+    lines = MRTD.viz_encoder(data)
     with pytest.raises(ValueError):
-        mrz_parser(*lines)
+        MRTD.mrz_parser(*lines)
