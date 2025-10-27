@@ -38,6 +38,7 @@ CHECK_DIGIT_CASES = [
 # Check Digit Tests
 # ---------------------------------------------------------------------
 
+
 @pytest.mark.parametrize("data, expected", CHECK_DIGIT_CASES)
 def test_check_digit_calculator_returns_correct_digit(data, expected):
     """Ensure Fletcher16 % 10 produces the expected single-digit result."""
@@ -52,12 +53,15 @@ def test_checksum_matcher_validates_correctly(data, expected):
     assert checksum_matcher(data, expected), f"{data} should match {expected}"
     # Test with an incorrect check digit to ensure it fails properly
     wrong_digit = str((int(expected) + 3) % 10)
-    assert not checksum_matcher(data, wrong_digit), f"{data} should fail with {wrong_digit}"
+    assert not checksum_matcher(
+        data, wrong_digit
+    ), f"{data} should fail with {wrong_digit}"
 
 
 # ---------------------------------------------------------------------
 # MRZ Parsing & Encoding Tests
 # ---------------------------------------------------------------------
+
 
 def test_mrz_parser_returns_correct_data():
     """Verify MRZ lines decode into the correct structured dictionary."""

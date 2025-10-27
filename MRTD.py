@@ -29,7 +29,7 @@ def checksum_matcher(data_field: str, expected_digit: str) -> bool:
 
 def mrz_parser(line_one: str, line_two: str) -> dict:
     data = {
-        "document_type": line_one[0],
+        "document_type": line_one[0:2].replace("<", "").strip(),
         "country_code": line_one[2:5],
     }
 
@@ -44,13 +44,18 @@ def mrz_parser(line_one: str, line_two: str) -> dict:
         "date_of_birth": (line_two[13:19], line_two[19]),
         "gender": (line_two[20], None),
         "expiration_date": (line_two[21:27], line_two[27]),
-        "personal_number": (line_two[28:42].replace("<", " ").strip(), line_two[43]),
+        "personal_number": (
+            line_two[28:42].replace("<", " ").strip(),
+            line_two[43],
+        ),
     }
 
     for label, (value, check_digit) in fields.items():
         data[label] = value
         if check_digit and not checksum_matcher(value, check_digit):
-            raise ValueError(f"{label.replace('_', ' ').title()} checksum does not match")
+            raise ValueError(
+                f"{label.replace('_', ' ').title()} checksum does not match"
+            )
 
     return data
 
@@ -60,7 +65,12 @@ def viz_encoder(data: dict) -> list[str]:
     first_name = data.get("given_name", "").replace(" ", "<")
     last_name = data.get("lastname", "").replace(" ", "<")
     country = data.get("country_code", "")
-    line_one = f"{data.get('document_type', '')}<{country}{last_name}<<{first_name}"
+    document_type = data.get("document_type", "")
+    if len(document_type) == 1:
+        doc_type_field = f"{document_type}<"
+    else:
+        doc_type_field = document_type
+    line_one = f"{doc_type_field}{country}{last_name}<<{first_name}"
     line_one = line_one.ljust(44, "<")[:44]
 
     passport = data.get("passport_number", "")
@@ -75,6 +85,8 @@ def viz_encoder(data: dict) -> list[str]:
         f"{gender}{exp}{check_digit_calculator(exp)}"
         f"{personal}"
     )
-    line_two = line_two.ljust(43, "<")[:43] + str(check_digit_calculator(personal))
+    line_two = line_two.ljust(43, "<")[:43] + str(
+        check_digit_calculator(personal)
+    )
 
     return [line_one, line_two]
