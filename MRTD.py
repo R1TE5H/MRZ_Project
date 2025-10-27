@@ -41,6 +41,7 @@ def mrz_parser(line_one: str, line_two: str) -> dict:
     fields = {
         "passport_number": (line_two[0:9], line_two[9]),
         "nationality": (line_two[10:13], None),
+        # DDMMYY format for date_of_birth and expiration_date
         "date_of_birth": (line_two[13:19], line_two[19]),
         "gender": (line_two[20], None),
         "expiration_date": (line_two[21:27], line_two[27]),
@@ -62,8 +63,28 @@ def mrz_parser(line_one: str, line_two: str) -> dict:
 
 def viz_encoder(data: dict) -> list[str]:
 
-    first_name = data.get("given_name", "").replace(" ", "<")
-    last_name = data.get("lastname", "").replace(" ", "<")
+    import re
+
+    def encode_name(name: str, is_lastname: bool = False) -> str:
+        # Remove apostrophes
+        name = name.replace("'", "")
+        # Replace hyphens with <
+        name = name.replace("-", "<")
+        # Handle commas
+        if is_lastname:
+            # If comma separates last and first name, omit comma
+            name = name.replace(",", "")
+        else:
+            # If comma separates components in given name, replace with <
+            name = re.sub(r",\s*", "<", name)
+        # Remove other punctuation (except <)
+        name = re.sub(r"[\.!?;:\"\(\)\[\]{}|/\\@#$%^&*_~`]", "", name)
+        # Replace spaces with <
+        name = name.replace(" ", "<")
+        return name
+
+    first_name = encode_name(data.get("given_name", ""))
+    last_name = encode_name(data.get("lastname", ""), is_lastname=True)
     country = data.get("country_code", "")
     document_type = data.get("document_type", "")
     if len(document_type) == 1:
@@ -74,8 +95,8 @@ def viz_encoder(data: dict) -> list[str]:
     line_one = line_one.ljust(44, "<")[:44]
 
     passport = data.get("passport_number", "")
-    dob = data.get("date_of_birth", "")
-    exp = data.get("expiration_date", "")
+    dob = data.get("date_of_birth", "")  # Should be DDMMYY
+    exp = data.get("expiration_date", "")  # Should be DDMMYY
     gender = data.get("gender", "")
     personal = data.get("personal_number", "").replace(" ", "<")
 

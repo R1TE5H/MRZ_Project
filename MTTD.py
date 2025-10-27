@@ -17,14 +17,14 @@ TEST_DATA = {
     "given_name": "JOHN MICHAEL",
     "passport_number": "AB1234567",
     "nationality": "CAN",
-    "date_of_birth": "900101",
+    "date_of_birth": "019090",
     "gender": "M",
-    "expiration_date": "300101",
+    "expiration_date": "013030",
     "personal_number": "9876543210",
 }
 
 LINE_1_TEST = "P<CANDOE<<JOHN<MICHAEL<<<<<<<<<<<<<<<<<<<<<<"
-LINE_2_TEST = "AB12345676CAN9001010M30010189876543210<<<<<5"
+LINE_2_TEST = "AB12345676CAN0190904M01303069876543210<<<<<5"
 
 CHECK_DIGIT_CASES = [
     ("AB1234567", "6"),
