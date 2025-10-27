@@ -8,3 +8,5 @@ __pycache__/
 
 # Ignore Python bytecode files
 *.pyc
+
+.coverage
